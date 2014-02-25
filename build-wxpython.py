@@ -422,17 +422,7 @@ def macFixDependencyInstallName(destdir, prefix, extension, buildDir):
         runCmd(cmd)        
     os.chdir(pwd)
     
-
-
-if options.install:
-    # only add the --prefix flag if we have an explicit request to do
-    # so, otherwise let distutils install in the default location.
-    install_dir = DESTDIR or PREFIX
-    WXPY_PREFIX = ""
-    if options.wxpy_installdir:
-        install_dir = options.wxpy_installdir
-        WXPY_PREFIX = "--prefix=%s" % options.wxpy_installdir
-        
+    
 
 if sys.platform.startswith("win"):
     # Copy the wxWidgets DLLs to the wxPython package folder
@@ -499,6 +489,12 @@ command = sys.executable + " -u ./setup.py %s %s %s" % \
 exitIfError(runCmd(command), "ERROR: failed building wxPython.")
 
 if options.install:
+    # only add the --prefix flag if we have an explicit request to do
+    # so, otherwise let distutils install in the default location.
+    WXPY_PREFIX = ""
+    if options.wxpy_installdir:
+        WXPY_PREFIX = "--prefix=%s" % options.wxpy_installdir
+
     command = sys.executable + " -u ./setup.py install %s %s %s --record installed_files.txt" % \
             (WXPY_PREFIX, " ".join(wxpy_build_options), options.extra_setup)
     exitIfError(runCmd(command), "ERROR: failed installing wxPython.")
